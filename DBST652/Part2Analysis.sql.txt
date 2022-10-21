@@ -1,0 +1,61 @@
+-- Query 1
+select count(*) from temporary;
+
+-- Query 2
+select count(order_id) from temporary;
+
+-- Query 3
+select count(distinct order_id) from temporary;
+
+--Query 4
+select count(order_id) from temporary where order_id is not null;
+
+-- Query 5
+Select *
+From temporary
+Where order_id IN (
+    Select order_id FROM temporary GROUP BY order_id HAVING COUNT(*) > 1
+);
+
+-- Query 6 selects distinct order_ids where there is 1 reason for a return
+select distinct order_id, reason from temporary
+where returned = 'Yes';
+
+-- Query 7 list the distinct reasons for returns
+select distinct reason from temporary;
+
+-- Query 8 joins superstore and temporary order_id
+select t.order_id as temp_order_id, s.order_id as super_order_id, s.product_name
+from temporary t
+left join superstore s
+on t.order_id = s.order_id;
+
+-- Query 9 creates an empty table and inserts the temporary table into it
+CREATE TABLE returns AS SELECT * FROM temporary;
+
+-- Query 10 deletes null values in order_id column
+DELETE FROM returns
+WHERE order_id IS NULL;
+
+-- Query 11 returns identify duplicates rows by grouping data defined by 
+-- columns and count total occurance of a row
+SELECT reason, COUNT(*) AS CNT
+FROM returns
+GROUP BY reason
+HAVING COUNT(*) > 1;
+
+-- Query 12 returns products returned most often
+select s.product_name, count(s.product_name)
+from returns r
+left join superstore s
+on r.order_id = s.order_id
+group by s.product_name
+order by count(s.product_name) desc;
+
+-- Query 13???????
+SELECT s.product_id, s.product_name, SUM(s.quantity) AS Total_Returned
+FROM superstore s
+WHERE s.order_id IN
+(SELECT order_id FROM returns)
+GROUP BY s.product_id, s.product_name
+ORDER BY SUM(s.quantity) DESC;

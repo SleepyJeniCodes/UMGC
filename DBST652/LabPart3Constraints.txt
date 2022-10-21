@@ -1,0 +1,80 @@
+-- ADD CONSTRAINTS
+/* The Purpose a primary key is to confirm that the data in a specific column is unique */
+ALTER TABLE customers 
+ADD CONSTRAINT customers_pk PRIMARY KEY(customer_id);
+
+ALTER TABLE locations
+ADD CONSTRAINT locations_pk PRIMARY KEY(city, country, region);
+
+ALTER TABLE orderlines
+ADD CONSTRAINT orderlines_pk PRIMARY KEY (order_id, product_id);
+
+ALTER TABLE orders
+ADD CONSTRAINT order_id_pk PRIMARY KEY(order_id,customer_id);
+
+ALTER TABLE products
+ADD CONSTRAINT products_pk PRIMARY KEY (product_id, product_name);
+
+ALTER TABLE sub_categories 
+ADD CONSTRAINT subcat_pk PRIMARY KEY(sub_category);
+
+/* The Purpose of a Foreign key is to provide a column of group of columns 
+a link between two tables within a database*/
+ALTER TABLE customers
+ADD CONSTRAINT cust_loc_fk FOREIGN KEY(city, country, region)
+REFERENCES locations (city, country, region);
+
+ALTER TABLE orders
+ADD CONSTRAINT order_cust_fk FOREIGN KEY(customer_id)
+REFERENCES customers(customer_id);
+
+
+ALTER TABLE orderlines
+ADD CONSTRAINT orderlines_prod_fk FOREIGN KEY(product_id, product_name)
+REFERENCES products(product_id, product_name);
+
+ALTER TABLE orderlines
+ADD CONSTRAINT orderlines_order_fk FOREIGN KEY(order_id, customer_id)
+REFERENCES orders(order_id, customer_id);
+
+ALTER TABLE products
+ADD CONSTRAINT products_sub_fk 
+FOREIGN KEY(sub_category)
+REFERENCES sub_categories(sub_category);
+
+/* The Purpose of a check constraint is to limit the range of values that can be placed within a column */
+ALTER TABLE orderlines
+ADD CONSTRAINT check_positive_sales 
+CHECK (sales > 0);
+
+/* The purpose of the unique constraint is to ensure that all values within a column are different */
+ALTER TABLE customers
+ADD CONSTRAINT uc_customers UNIQUE (customer_id, customer_name);
+
+/* The purpose of the Not Null constraints is that it forces a column to not accept null values*/
+ALTER TABLE customers MODIFY customer_id NOT NULL;
+ALTER TABLE customers MODIFY customer_name NOT NULL;
+ALTER TABLE customers MODIFY segment_name NOT NULL;
+ALTER TABLE customers MODIFY country NOT NULL;
+ALTER TABLE customers MODIFY region NOT NULL;
+ALTER TABLE customers MODIFY city NOT NULL;
+
+ALTER TABLE locations MODIFY city NOT NULL;
+ALTER TABLE locations MODIFY state_name NOT NULL;
+ALTER TABLE locations MODIFY country NOT NULL;
+ALTER TABLE locations MODIFY region NOT NULL;
+
+ALTER TABLE orders MODIFY order_id NOT NULL;
+ALTER TABLE orders MODIFY order_priority NOT NULL;
+ALTER TABLE orders MODIFY order_date NOT NULL;
+
+ALTER TABLE orderlines MODIFY product_id NOT NULL;
+ALTER TABLE orderlines MODIFY order_id NOT NULL;
+ALTER TABLE orderlines MODIFY shipping_cost NOT NULL;
+ALTER TABLE orderlines MODIFY quantity NOT NULL;
+
+ALTER TABLE products MODIFY product_name NOT NULL;
+ALTER TABLE products MODIFY sub_category NOT NULL;
+
+ALTER TABLE sub_categories MODIFY sub_category NOT NULL;
+ALTER TABLE sub_categories MODIFY category_name NOT NULL;

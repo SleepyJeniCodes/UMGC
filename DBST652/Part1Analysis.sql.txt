@@ -1,0 +1,23 @@
+/* SQL statements for assignment*/
+select count(distinct order_id), count(order_id) from superstore;
+select order_id, COUNT(*) from superstore group by order_id;
+select order_id, product_id from superstore order by order_id;
+CREATE TABLE ORDERLINE AS( select order_id, product_id from superstore );
+SELECT order_id, product_id FROM orderline ORDER BY order_id, product_id;
+
+/*create a table for Priotitized Products*/
+create table PRIORITY as (select CATEGORY, ORDER_ID, ORDER_PRIORITY, PRODUCT_ID, PRODUCT_NAME from SUPERSTORE);
+/*organize PRIORITY by order_priority and category of product*/
+select * from PRIORITY order by ORDER_PRIORITY, CATEGORY;
+
+/*count unique customer_id*/
+select count(distinct customer_id), count (customer_id) from superstore;
+/*create Customer Information Table*/
+create table CUSTOMERS as (select CITY, COUNTRY, CUSTOMER_ID, CUSTOMER_NAME, SEGMENT from SUPERSTORE);
+/*order Customer Table by unique identifier*/
+select * from CUSTOMERS order by CUSTOMER_ID;
+
+/*create a table for customer order date and shipment date*/
+create table ORDER_SHIPMENT as (select CUSTOMER_ID, ORDER_DATE, ORDER_ID, PRODUCT_ID, SHIP_DATE from SUPERSTORE);
+/*order table by customer_id*/
+select * from ORDER_SHIPMENT order by CUSTOMER_ID;

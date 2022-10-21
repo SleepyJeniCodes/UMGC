@@ -1,0 +1,24 @@
+/* Referential Integrity test */
+/* Attempt to insert an order that does not exist in the ORDERS table into the RETURNS table */
+INSERT INTO RETURNS(returnid, returned, order_id, market)
+VALUES(234467, 'YES', '345-gdgth', 'USAIC')
+/* returns SQL Error: ORA-00904: "MARKET": invalid identifier
+00904. 00000 -  "%s: invalid identifier" */
+
+/* test check constraint */
+/* attempts to insert orderline containing sales with a value of 0*/
+INSERT INTO orderlines(order_id, product_id, discount, 
+profit, quantity, sales, shipping_cost)
+VALUES('JT-2022-1800', 'MIC-CR-1234', 0, 50, 2, 0, 5);
+/* returns ORA-02290: check constraint (DBST_USER.CHECK_POSITIVE_SALES) violated */
+
+/* test unique constraints */
+/* check unique constraint by adding the first row customer id */
+INSERT INTO customers(customer_id, customer_name, segment_name, market, city, country, region)
+VALUES('KL-66451', 'Ken Lonsdale', 'Consumer', 'EMEA', 'Baltimore', 'United States', 'East');
+/* returns ORA-00001: unique constraint (DBST_USER.CUSTOMERS_PK) violated */
+
+/* test null constraint in customers */
+INSERT INTO customers(customer_name)
+VALUES('Jennifer');
+/* returns ORA-01400: cannot insert NULL into ("DBST_USER"."CUSTOMERS"."CUSTOMER_ID") */

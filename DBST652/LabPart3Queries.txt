@@ -1,0 +1,65 @@
+--QUERIES
+/* a. names of customer who have returned products */
+select s.customer_name
+from returns r
+left join superstore s
+on r.order_id = s.order_id
+group by s.customer_name
+order by count(s.customer_name)
+
+/* b. customers have not ordered any products */
+select customer_id
+from customers
+where customer_id not in 
+(select customer_id from orders);
+
+/* c. most profitable products ordered */
+select p.product_name, o.profit 
+from products p
+inner join orderlines o
+on p.product_id = o.product_id
+order by 
+profit desc;
+
+/* d. customers are repeat customers */
+select c.customer_id, c.customer_name, COUNT(*) AS CNT from orders o
+join customers c 
+on c.customer_id = o.customer_id
+group by customer_name, c.customer_id
+having count(*) > 1;
+
+/* e. second most profitable order */
+select order_id, order_value 
+from (
+select order_id, sum(sales) order_value
+from orderlines
+group by order_id
+order by order_value desc)
+offset 1 rows
+fetch next 1 rows only;
+
+/* f. orders each customer placed */
+select c.customer_id, c.customer_name, count(o.customer_id) cnt 
+from customers c
+inner join orders o  
+on c.customer_id = o.customer_id 
+group by c.customer_id, c.customer_name
+order by cnt desc;
+
+/* g. line items on an order */
+SELECT AVG(orderline_count)
+FROM (
+SELECT order_id, COUNT(*) as orderline_count
+FROM orderlines
+GROUP BY order_id) orderline_count_table; 
+
+
+
+/* h. products most frequently ordered */
+select p.product_id, p.product_name, count(o.product_id) cnt
+from products p
+inner join orderline o  
+on p.product_id = o.product_id 
+group by p.product_id, p.product_name
+order by CNT desc;
+
